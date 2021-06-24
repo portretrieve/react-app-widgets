@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 function Search() {
   const [searchTerm, setSearchTerm] = useState("programming");
+  const [deBouncedTerm, setDebouncedTerm] = useState(searchTerm);
   const [results, setresults] = useState([]);
 
   const renderedList = results.map((result, index) => {
@@ -26,24 +28,25 @@ function Search() {
   });
 
   useEffect(() => {
-    const url = "https://en.wikipedia.org/w/api.php";
+    const id = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(id);
+    };
+  }, [searchTerm]);
+
+  useEffect(() => {
     async function search() {
-      const { data } = await axios.get(url, {
-        params: {
-          action: "query",
-          list: "search",
-          origin: "*",
-          format: "json",
-          srsearch: searchTerm
-        }
-      });
+      const { data } = await axios.get(
+        `https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srsearch=${deBouncedTerm}`
+      );
       setresults(data.query.search);
     }
 
-    if (searchTerm) {
-      search();
-    }
-  }, [searchTerm]);
+    search();
+  }, [deBouncedTerm]);
 
   return (
     <div>
