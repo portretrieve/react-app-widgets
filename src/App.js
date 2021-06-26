@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import "./App.css";
 import Accordion from "./components/Accordion";
 import Search from "./components/Search";
 import Dropdown from "./components/Dropdown";
 import Translate from "./components/Translate";
+import Route from "./components/Route";
+import Header from "./components/Header";
 
 const items = [
   {
@@ -38,41 +39,26 @@ const options = [
 const App = () => {
   const [selected, setSelected] = useState(options[0]);
 
-  const showRoutes = () => {
-    switch (window.location.pathname) {
-      case "/":
-        return <Accordion items={items} />;
-        break;
-      case "/search":
-        return <Search />;
-        break;
-      case "/dropdown":
-        return (
-          <Dropdown
-            options={options}
-            setSelected={setSelected}
-            selected={selected}
-            label="Select A Color"
-          />
-        );
-        break;
-      case "/translate":
-        return <Translate />;
-        break;
-      default:
-        break;
-    }
-  };
   return (
-    <div className="app">
-      <div className="routes">
-        <a href="/">Accordion</a>
-        <a href="/search">Search</a>
-        <a href="/dropdown">DropDown</a>
-        <a href="/translate">Translate</a>
-      </div>
-      <hr />
-      <div className="ui container">{showRoutes()}</div>
+    <div className="ui container">
+      <Header />
+      <Route path="/">
+        <Accordion items={items} />
+      </Route>
+      <Route path="/search">
+        <Search />
+      </Route>
+      <Route path="/dropdown">
+        <Dropdown
+          options={options}
+          setSelected={setSelected}
+          selected={selected}
+          label="Select A Color"
+        />
+      </Route>
+      <Route path="/translate">
+        <Translate />
+      </Route>
     </div>
   );
 };
